@@ -1,0 +1,31 @@
+name: release
+
+on:
+  push:
+    branches: master                    # 2020年10月后github新建仓库默认分支改为main，注意更改
+    tags: "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04 # ubuntu-latest ubuntu的最新版本
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
+    steps:
+      - uses: actions/checkout@v4
+      - name: 打印当前路径
+        run: | # | 为 yaml 的特定符号，其下可以使用多行文字。
+          pwd
+          ls -alh
+
+      - name: 创建一个 readme.md 文件
+        run: |
+          echo "hello github action" > readme.md
+          ls -alh
+      
+      - name: 发布 readme.md 文件
+        id: new_release
+        uses: softprops/action-gh-release@v2.0.8
+        with:
+          token: ${{ secrets.LINUX_RELEASE_PERSONAL_TOKEN }}
+          name: release-latest
+          make_latest: true
+          files: readme.md
