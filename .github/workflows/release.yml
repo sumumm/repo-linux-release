@@ -17,21 +17,20 @@ jobs:
           ls -alh
           echo "github.workspace路径为 ${{ github.workspace }}"
           ls ${{ github.workspace }} -alh
-
-      - name: 拷贝存储库中的文件
-        run: |
-          cp -pvf ${{ github.workspace }}/linux_app_demo/helloworld_demo.c ./
-      
-      - name: 安装gcc编译器
+      - name: 安装 C 语言编译环境
         run: |
           sudo apt install -y gcc
           gcc --version
+          sudo apt install -y make
+          make --version
       
       - name: 编译 helloworld_demo.c
         run: |
-          gcc helloworld_demo.c -o helloworld_demo.out
+          cd ${{ github.workspace }}/linux_app_demo
           ls -alh
-          ./helloworld_demo.out
+          make
+          ./app_demo.out
+      
       - name: 运行 build.sh 脚本
         run: |
           cd ${{ github.workspace }}
@@ -41,7 +40,7 @@ jobs:
 
       - name: 创建一个 readme.md 文件
         run: |
-          echo "hello github action" > readme.md
+          echo "app_demo.out" > ${{ github.workspace }}/linux_app_demo/readme.md
           ls -alh
       
       - name: 发布 readme.md 文件
@@ -52,5 +51,5 @@ jobs:
           name: release-latest
           make_latest: true
           files: |
-            readme.md
-            helloworld_demo.out
+            ${{ github.workspace }}/linux_app_demo/readme.md
+            ${{ github.workspace }}/linux_app_demo/app_demo.out
