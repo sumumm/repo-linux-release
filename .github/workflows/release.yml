@@ -15,6 +15,9 @@ jobs:
         run: | # | 为 yaml 的特定符号，其下可以使用多行文字。
           pwd
           ls -alh
+          echo "github.workspace路径为 ${{ github.workspace }}"
+          ls ${{ github.workspace }} -alh
+
       - name: 拷贝存储库中的文件
         run: |
           cp -pvf ${{ github.workspace }}/linux_app_demo/helloworld_demo.c ./
@@ -29,6 +32,12 @@ jobs:
           gcc helloworld_demo.c -o helloworld_demo.out
           ls -alh
           ./helloworld_demo.out
+      - name: 运行 build.sh 脚本
+        run: |
+          cd ${{ github.workspace }}
+          ls -alh
+          chmod 777 build.sh
+          ./build.sh
 
       - name: 创建一个 readme.md 文件
         run: |
