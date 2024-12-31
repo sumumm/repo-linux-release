@@ -42,7 +42,18 @@ jobs:
         run: |
           echo "app_demo.out" > ${{ github.workspace }}/linux_app_demo/readme.md
           ls -alh
-      
+
+      - name: 拉取gitee仓库
+        env:
+          GITHUB_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+          GITHUB_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+        run: |
+          git config user.name "$GITHUB_USER_NAME"
+          git config user.email "$GITHUB_USER_EMAIL"
+          git clone https://gitee.com/sumumm/linux-shell-script.git
+          cd linux-shell-script
+          ls -alh
+
       - name: 发布 readme.md 文件
         id: new_release
         uses: softprops/action-gh-release@v2.0.8
