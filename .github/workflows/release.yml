@@ -11,12 +11,15 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
     steps:
       - uses: actions/checkout@v4
-      - name: 打印当前路径
+      - name: 打印相关路径
         run: | # | 为 yaml 的特定符号，其下可以使用多行文字。
-          pwd
+          echo "当前路径为 $(pwd)"
           ls -alh
           echo "github.workspace路径为 ${{ github.workspace }}"
           ls ${{ github.workspace }} -alh
+          echo "HOME路径为 $HOME"
+          ls $HOME -alh
+
       - name: 安装 C 语言编译环境
         run: |
           sudo apt install -y gcc
@@ -53,6 +56,18 @@ jobs:
           git clone https://gitee.com/sumumm/linux-shell-script.git
           cd linux-shell-script
           ls -alh
+
+      - name: 安装交叉编译工具链
+        env:
+          SHELL_ARG: ${{ secrets.SHELL_PARAM }}
+        run: |
+          cd linux-shell-script/develop
+          chmod 777 arm-gcc.sh
+          ./arm-gcc.sh $SHELL_ARG
+          source ~/.bashrc
+          source ~/.profile
+          source ~/.bash_profile
+          arm-linux-gnueabihf-gcc --version  
 
       - name: 发布 readme.md 文件
         id: new_release
