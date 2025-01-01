@@ -9,6 +9,6 @@
 
 # latest_tag=`git tag | sort -V | tail -1`
 
-git push origin --delete V0.0.6
-git tag -d V0.0.6
+git push origin --delete V0.0.7
+git tag -d V0.0.7
 

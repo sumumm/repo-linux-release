@@ -46,21 +46,26 @@ jobs:
           echo "app_demo.out" > ${{ github.workspace }}/linux_app_demo/readme.md
           ls -alh
 
-      - name: 拉取gitee仓库
+      - name: 配置Git参数
         env:
           GITHUB_USER_NAME: ${{ secrets.GIT_USER_NAME }}
           GITHUB_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
         run: |
           git config user.name "$GITHUB_USER_NAME"
           git config user.email "$GITHUB_USER_EMAIL"
+
+      - name: 拉取 https://gitee.com/sumumm/linux-shell-script.git 仓库
+        run: |
+          cd ${{ github.workspace }}
           git clone https://gitee.com/sumumm/linux-shell-script.git
-          cd linux-shell-script
           ls -alh
 
       - name: 安装交叉编译工具链
         env:
           SHELL_ARG: ${{ secrets.SHELL_PARAM }}
         run: |
+          cd ${{ github.workspace }}
+          ls -alh
           cd linux-shell-script/develop
           chmod 777 arm-gcc.sh
           ./arm-gcc.sh $SHELL_ARG
@@ -69,6 +74,14 @@ jobs:
           source ~/.bash_profile
           arm-linux-gnueabihf-gcc --version  
 
+      - name: 编译并发布uboot
+        run: |
+          cd ${{ github.workspace }}
+          git clone https://gitee.com/sumumm/u-boot.git
+          cd u-boot
+          chmod 777 1.sh
+          ./1.sh
+        
       - name: 发布 readme.md 文件
         id: new_release
         uses: softprops/action-gh-release@v2.0.8
@@ -79,3 +92,6 @@ jobs:
           files: |
             ${{ github.workspace }}/linux_app_demo/readme.md
             ${{ github.workspace }}/linux_app_demo/app_demo.out
+            ${{ github.workspace }}/u-boot/u-boot-dtb.imx
+            ${{ github.workspace }}/u-boot/u-boot-dtb.bin
+            
