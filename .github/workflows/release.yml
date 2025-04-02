@@ -8,7 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04 # ubuntu-latest ubuntu的最新版本
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
+    #if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
+    if: github.event_name == 'push' || startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
     steps:
       - uses: actions/checkout@v4
       - name: 打印相关路径
@@ -19,27 +20,13 @@ jobs:
           ls ${{ github.workspace }} -alh
           echo "HOME路径为 $HOME"
           ls $HOME -alh
-
-      - name: 安装 C 语言编译环境
-        run: |
-          sudo apt install -y gcc
-          gcc --version
-          sudo apt install -y make
-          make --version
       
-      - name: 编译 helloworld_demo.c
-        run: |
-          cd ${{ github.workspace }}/linux_app_demo
-          ls -alh
-          make
-          ./app_demo.out
-      
-      - name: 运行 build.sh 脚本
+      - name: 运行 setup_env.sh 脚本设置环境
         run: |
           cd ${{ github.workspace }}
           ls -alh
-          chmod 777 build.sh
-          ./build.sh
+          chmod 777 setup_env.sh
+          ./setup_env.sh
 
       - name: 创建一个 readme.md 文件
         run: |
@@ -54,10 +41,11 @@ jobs:
           git config user.name "$GITHUB_USER_NAME"
           git config user.email "$GITHUB_USER_EMAIL"
 
-      - name: 拉取 https://gitee.com/sumumm/linux-shell-script.git 仓库
+      - name: git拉取需要的仓库
         run: |
           cd ${{ github.workspace }}
           git clone https://gitee.com/sumumm/linux-shell-script.git
+          git clone https://gitee.com/sumumm/linux-kernel.git
           ls -alh
 
       - name: 安装交叉编译工具链
@@ -74,24 +62,33 @@ jobs:
           source ~/.bash_profile
           arm-linux-gnueabihf-gcc --version  
 
-      - name: 编译并发布uboot
-        run: |
-          cd ${{ github.workspace }}
-          git clone https://gitee.com/sumumm/u-boot.git
-          cd u-boot
-          chmod 777 1.sh
-          ./1.sh
+      # 会停在这里，我们用ssh调试,会有下面的打印
+      # SSH: ssh HLZdjxXTgmyb8uk5rSRKujRfA@nyc1.tmate.io
+      # or: ssh -i <path-to-private-SSH-key> HLZdjxXTgmyb8uk5rSRKujRfA@nyc1.tmate.io
+      # 上传 rsync -avz <session_id>@tmate.io:/path/to/remote/file /path/to/local/directory
+      # 同步 rsync -avz /path/to/local/file <session_id>@tmate.io:/path/to/remote/directory
+
+      - name: Setup tmate 
+        uses: mxschmitt/action-tmate@v3
+      
+      # - name: 编译并发布uboot
+      #   run: |
+      #     cd ${{ github.workspace }}
+      #     git clone https://gitee.com/sumumm/u-boot.git
+      #     cd u-boot
+      #     chmod 777 1.sh
+      #     ./1.sh
         
-      - name: 发布 readme.md 文件
-        id: new_release
-        uses: softprops/action-gh-release@v2.0.8
-        with:
-          token: ${{ secrets.LINUX_RELEASE_PERSONAL_TOKEN }}
-          name: release-latest
-          make_latest: true
-          files: |
-            ${{ github.workspace }}/linux_app_demo/readme.md
-            ${{ github.workspace }}/linux_app_demo/app_demo.out
-            ${{ github.workspace }}/u-boot/u-boot-dtb.imx
-            ${{ github.workspace }}/u-boot/u-boot-dtb.bin
+      # - name: 发布 readme.md 文件
+      #   id: new_release
+      #   uses: softprops/action-gh-release@v2.0.8
+      #   with:
+      #     token: ${{ secrets.LINUX_RELEASE_PERSONAL_TOKEN }}
+      #     name: release-latest
+      #     make_latest: true
+      #     files: |
+      #       ${{ github.workspace }}/linux_app_demo/readme.md
+      #       ${{ github.workspace }}/linux_app_demo/app_demo.out
+      #       ${{ github.workspace }}/u-boot/u-boot-dtb.imx
+      #       ${{ github.workspace }}/u-boot/u-boot-dtb.bin
             
