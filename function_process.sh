@@ -118,7 +118,7 @@ function echo_menu()
     echo -e "${PINK}current path         :$(pwd)${CLS}"
     echo -e "${PINK}SCRIPT_CURRENT_PATH  :${SCRIPT_CURRENT_PATH}${CLS}"
     echo ""
-    echo -e "* [0] 获取当前ubuntu信息"
+    echo -e "* [0] 编译linux kernel"
     echo "================================================="
 }
 
@@ -135,8 +135,15 @@ function func_process()
 
 	case "${choose}" in
 		"0") 
-            dev_env_info
-            get_ubuntu_info
+            cd linux-kernel
+            echo "当前路径:$(pwd)"
+            ls -alh
+            chmod 777 get_kernel_src.sh
+            ./get_kernel_src.sh -r https://github.com/nxp-imx/linux-imx -b v4.19.71 -c e7d2672c66e4d3675570369bf20856296da312c4 -d ./kernel_nxp_4.19.71
+            cd ./kernel_nxp_4.19.71
+            echo "当前路径:$(pwd)"
+            chmod 777 build.sh
+            ./build.sh -t 1 -a 1
             ;;
 		*) 
             dev_env_info

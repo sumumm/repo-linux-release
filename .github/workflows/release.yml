@@ -60,7 +60,21 @@ jobs:
           source ~/.bashrc
           source ~/.profile
           source ~/.bash_profile
-          arm-linux-gnueabihf-gcc --version  
+          arm-linux-gnueabihf-gcc --version
+
+      - name: 编译uboot
+        run: |
+          cd ${{ github.workspace }}
+          git clone https://gitee.com/sumumm/u-boot.git
+          cd u-boot
+          chmod 777 1.sh
+          ./1.sh
+      
+      - name: 编译kernel
+        run: |
+          cd ${{ github.workspace }}
+          chmod 777 function_process.sh
+          ./function_process.sh
 
       # 会停在这里，我们用ssh调试,会有下面的打印
       # SSH: ssh HLZdjxXTgmyb8uk5rSRKujRfA@nyc1.tmate.io
@@ -71,24 +85,15 @@ jobs:
       - name: Setup tmate 
         uses: mxschmitt/action-tmate@v3
       
-      # - name: 编译并发布uboot
-      #   run: |
-      #     cd ${{ github.workspace }}
-      #     git clone https://gitee.com/sumumm/u-boot.git
-      #     cd u-boot
-      #     chmod 777 1.sh
-      #     ./1.sh
-        
-      # - name: 发布 readme.md 文件
-      #   id: new_release
-      #   uses: softprops/action-gh-release@v2.0.8
-      #   with:
-      #     token: ${{ secrets.LINUX_RELEASE_PERSONAL_TOKEN }}
-      #     name: release-latest
-      #     make_latest: true
-      #     files: |
-      #       ${{ github.workspace }}/linux_app_demo/readme.md
-      #       ${{ github.workspace }}/linux_app_demo/app_demo.out
-      #       ${{ github.workspace }}/u-boot/u-boot-dtb.imx
-      #       ${{ github.workspace }}/u-boot/u-boot-dtb.bin
+      - name: 发布成果物
+        id: new_release
+        uses: softprops/action-gh-release@v2.0.8
+        with:
+          token: ${{ secrets.LINUX_RELEASE_PERSONAL_TOKEN }}
+          name: release-latest
+          make_latest: true
+          files: |
+            ${{ github.workspace }}/u-boot/u-boot-dtb.imx
+            ${{ github.workspace }}/u-boot/u-boot-dtb.bin
+            ${{ github.workspace }}/linux-kernel/kernel_nxp_4.19.71/image_output/*
             
