@@ -8,8 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04 # ubuntu-latest ubuntu的最新版本
-    #if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
-    if: github.event_name == 'push' || startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
+    #if: github.event_name == 'push' || startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
     steps:
       - uses: actions/checkout@v4
       - name: 打印相关路径
@@ -63,19 +63,19 @@ jobs:
           source ~/.bash_profile
           arm-linux-gnueabihf-gcc --version
 
-      # - name: 编译uboot
-      #   run: |
-      #     cd ${{ github.workspace }}
-      #     git clone https://gitee.com/sumumm/u-boot.git
-      #     cd u-boot
-      #     chmod 777 1.sh
-      #     ./1.sh
+      - name: 编译uboot
+        run: |
+          cd ${{ github.workspace }}
+          git clone https://gitee.com/sumumm/u-boot.git
+          cd u-boot
+          chmod 777 1.sh
+          ./1.sh
       
-      # - name: 编译kernel
-      #   run: |
-      #     cd ${{ github.workspace }}
-      #     chmod 777 function_process.sh
-      #     ./function_process.sh
+      - name: 编译kernel
+        run: |
+          cd ${{ github.workspace }}
+          chmod 777 function_process.sh
+          ./function_process.sh
 
       - name: 制作打包根文件系统
         run: |
@@ -90,8 +90,8 @@ jobs:
       # 上传 rsync -avz <session_id>@tmate.io:/path/to/remote/file /path/to/local/directory
       # 同步 rsync -avz /path/to/local/file <session_id>@tmate.io:/path/to/remote/directory
 
-      - name: Setup tmate 
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup tmate 
+      #   uses: mxschmitt/action-tmate@v3
       
       - name: 发布成果物
         id: new_release
