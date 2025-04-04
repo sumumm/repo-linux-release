@@ -46,6 +46,7 @@ jobs:
           cd ${{ github.workspace }}
           git clone https://gitee.com/sumumm/linux-shell-script.git
           git clone https://gitee.com/sumumm/linux-kernel.git
+          git clone https://gitee.com/sumumm/linux-rootfs.git
           ls -alh
 
       - name: 安装交叉编译工具链
@@ -62,19 +63,26 @@ jobs:
           source ~/.bash_profile
           arm-linux-gnueabihf-gcc --version
 
-      - name: 编译uboot
-        run: |
-          cd ${{ github.workspace }}
-          git clone https://gitee.com/sumumm/u-boot.git
-          cd u-boot
-          chmod 777 1.sh
-          ./1.sh
+      # - name: 编译uboot
+      #   run: |
+      #     cd ${{ github.workspace }}
+      #     git clone https://gitee.com/sumumm/u-boot.git
+      #     cd u-boot
+      #     chmod 777 1.sh
+      #     ./1.sh
       
-      - name: 编译kernel
+      # - name: 编译kernel
+      #   run: |
+      #     cd ${{ github.workspace }}
+      #     chmod 777 function_process.sh
+      #     ./function_process.sh
+
+      - name: 制作打包根文件系统
         run: |
           cd ${{ github.workspace }}
-          chmod 777 function_process.sh
-          ./function_process.sh
+          cd linux-rootfs
+          chmod 777 1.sh
+          ./1.sh -g 1
 
       # 会停在这里，我们用ssh调试,会有下面的打印
       # SSH: ssh HLZdjxXTgmyb8uk5rSRKujRfA@nyc1.tmate.io
@@ -96,4 +104,5 @@ jobs:
             ${{ github.workspace }}/u-boot/u-boot-dtb.imx
             ${{ github.workspace }}/u-boot/u-boot-dtb.bin
             ${{ github.workspace }}/linux-kernel/kernel_nxp_4.19.71/image_output/*
+            ${{ github.workspace }}/linux-rootfs/buildroot-2023.05.1/output/images/imx6ull_rootfs.tar.bz2
             
