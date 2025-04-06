@@ -74,7 +74,7 @@ jobs:
       - name: 编译kernel
         run: |
           cd ${{ github.workspace }}
-          linux-kernel
+          cd linux-kernel
           chmod 777 build.sh
           ./build.sh -p 1
 
