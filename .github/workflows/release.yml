@@ -83,7 +83,7 @@ jobs:
           cd ${{ github.workspace }}
           cd linux-rootfs
           chmod 777 1.sh
-          ./1.sh -g 1
+          ./1.sh -p 1
 
       # 会停在这里，我们用ssh调试,会有下面的打印
       # SSH: ssh HLZdjxXTgmyb8uk5rSRKujRfA@nyc1.tmate.io
@@ -104,5 +104,5 @@ jobs:
           files: |
             ${{ github.workspace }}/u-boot/image_output/u-boot-*.tar.bz2
             ${{ github.workspace }}/kernel_nxp_4.19.71/image_output/kernel-*.tar.bz2
-            ${{ github.workspace }}/linux-rootfs/buildroot-2023.05.1/output/images/imx6ull_rootfs.tar.bz2
+            ${{ github.workspace }}/linux-rootfs/buildroot-2023.05.1/output/images/rootfs-*.tar.bz2
             
