@@ -69,13 +69,14 @@ jobs:
           git clone https://gitee.com/sumumm/u-boot.git
           cd u-boot
           chmod 777 1.sh
-          ./1.sh
+          ./1.sh -p 1
       
       - name: 编译kernel
         run: |
           cd ${{ github.workspace }}
-          chmod 777 function_process.sh
-          ./function_process.sh
+          linux-kernel
+          chmod 777 build.sh
+          ./build.sh -p 1
 
       - name: 制作打包根文件系统
         run: |
@@ -101,8 +102,7 @@ jobs:
           name: release-latest
           make_latest: true
           files: |
-            ${{ github.workspace }}/u-boot/u-boot-dtb.imx
-            ${{ github.workspace }}/u-boot/u-boot-dtb.bin
-            ${{ github.workspace }}/linux-kernel/kernel_nxp_4.19.71/image_output/*
+            ${{ github.workspace }}/u-boot/image_output/u-boot-*.tar.bz2
+            ${{ github.workspace }}/kernel_nxp_4.19.71/image_output/kernel-*.tar.bz2
             ${{ github.workspace }}/linux-rootfs/buildroot-2023.05.1/output/images/imx6ull_rootfs.tar.bz2
             

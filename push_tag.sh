@@ -8,7 +8,10 @@
 ##
 
 # latest_tag=`git tag | sort -V | tail -1`
+# 删除tag
+git tag -d tag_name
+git push origin --delete tag_name
 
-git push origin --delete V0.0.7
-git tag -d V0.0.7
-
+# 创建tag
+git tag tag_name
+git push origin tag_name
