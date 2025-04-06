@@ -91,8 +91,8 @@ jobs:
       # 上传 rsync -avz <session_id>@tmate.io:/path/to/remote/file /path/to/local/directory
       # 同步 rsync -avz /path/to/local/file <session_id>@tmate.io:/path/to/remote/directory
 
-      # - name: Setup tmate 
-      #   uses: mxschmitt/action-tmate@v3
+      - name: Setup tmate 
+        uses: mxschmitt/action-tmate@v3
       
       - name: 发布成果物
         id: new_release
