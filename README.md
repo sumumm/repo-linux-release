@@ -1,7 +1,13 @@
 # linux-release
 
-- ✅aplpha开发板的uboot
+## <font size=2>✅ uboot</font>
 
-- ✅aplpha开发板的kernel
+- 无更新
 
-- ✅aplpha开发板的rootfs
+## <font size=2>✅ kernel</font>
+
+- 无更新
+
+## <font size=2>✅ rootfs</font>
+
+- busybux支持中文
