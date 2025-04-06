@@ -1,2 +1,7 @@
 # linux-release
-学习linux开发过程中资源自动打包使用
+
+- ✅aplpha开发板的uboot
+
+- ✅aplpha开发板的kernel
+
+- ✅aplpha开发板的rootfs

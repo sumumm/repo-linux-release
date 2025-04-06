@@ -20,18 +20,13 @@ jobs:
           ls ${{ github.workspace }} -alh
           echo "HOME路径为 $HOME"
           ls $HOME -alh
-      
+
       - name: 运行 setup_env.sh 脚本设置环境
         run: |
           cd ${{ github.workspace }}
           ls -alh
           chmod 777 setup_env.sh
           ./setup_env.sh
-
-      - name: 创建一个 readme.md 文件
-        run: |
-          echo "app_demo.out" > ${{ github.workspace }}/linux_app_demo/readme.md
-          ls -alh
 
       - name: 配置Git参数
         env:
@@ -44,9 +39,12 @@ jobs:
       - name: git拉取需要的仓库
         run: |
           cd ${{ github.workspace }}
+          echo "⬇️ 下载所需要的仓库..."
           git clone https://gitee.com/sumumm/linux-shell-script.git
           git clone https://gitee.com/sumumm/linux-kernel.git
           git clone https://gitee.com/sumumm/linux-rootfs.git
+          git clone https://gitee.com/sumumm/u-boot.git
+          echo "✅ 下载完成,当前目录文件为:"
           ls -alh
 
       - name: 安装交叉编译工具链
@@ -66,7 +64,6 @@ jobs:
       - name: 编译uboot
         run: |
           cd ${{ github.workspace }}
-          git clone https://gitee.com/sumumm/u-boot.git
           cd u-boot
           chmod 777 1.sh
           ./1.sh -p 1
@@ -93,16 +90,26 @@ jobs:
 
       # - name: Setup tmate 
       #   uses: mxschmitt/action-tmate@v3
-      
+
       - name: 发布成果物
         id: new_release
         uses: softprops/action-gh-release@v2.0.8
         with:
           token: ${{ secrets.LINUX_RELEASE_PERSONAL_TOKEN }}
-          name: release-latest
+          tag_name: ${{ github.ref }}
+          name: "Release ${{ github.ref }}"
+          body: |
+            **版本说明**  
+            基于标签 ${{ github.ref }} 构建的稳定版本。
+            更新内容详见 README.md。
+          body_path: README.md  # 可选
+          draft: false
+          prerelease: false
           make_latest: true
           files: |
+            README.md
             ${{ github.workspace }}/u-boot/image_output/u-boot-*.tar.bz2
             ${{ github.workspace }}/kernel_nxp_4.19.71/image_output/kernel-*.tar.bz2
             ${{ github.workspace }}/linux-rootfs/buildroot-2023.05.1/output/images/rootfs-*.tar.bz2
+
             
