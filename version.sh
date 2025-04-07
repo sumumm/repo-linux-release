@@ -54,7 +54,7 @@ function get_repo_info()
 | 项目 | 内容 |
 |---|---|
 | **仓库路径**  | \`$(pwd)\` |
-| **远程地址**  | ${remote_url} |
+| **远程地址**  | [${remote_url}](${remote_url}) |
 | **分支状态**  | \`${branch_info}\` |
 | **完整哈希**  | \`${commit_hash}\` |
 | **短提交ID**  | ${short_hash} |
