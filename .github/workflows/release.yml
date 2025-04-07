@@ -49,7 +49,15 @@ jobs:
           chmod 777 version.sh
           ./version.sh
 
+      - name: Cache ARM GCC
+        id: cache-arm-linux-gnueabihf-gcc
+        uses: actions/cache@v3
+        with:
+          path: ~/2software
+          key: ${{ runner.os }}-arm-linux-gnueabihf-gcc-8.3-2019.03
+
       - name: 安装交叉编译工具链
+        if: steps.cache-arm-linux-gnueabihf-gcc.outputs.cache-hit != 'true'
         env:
           SHELL_ARG: ${{ secrets.SHELL_PARAM }}
         run: |
