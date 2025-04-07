@@ -39,13 +39,15 @@ jobs:
       - name: git拉取需要的仓库
         run: |
           cd ${{ github.workspace }}
-          echo "⬇️ 下载所需要的仓库..."
-          git clone https://gitee.com/sumumm/linux-shell-script.git
-          git clone https://gitee.com/sumumm/linux-kernel.git
-          git clone https://gitee.com/sumumm/linux-rootfs.git
-          git clone https://gitee.com/sumumm/u-boot.git
+          echo "⬇️ 下载所需要的仓库(只克隆最近三次提交记录)..."
+          git clone --depth=3 https://gitee.com/sumumm/linux-shell-script.git
+          git clone --depth=3 https://gitee.com/sumumm/linux-kernel.git
+          git clone --depth=3 https://gitee.com/sumumm/linux-rootfs.git
+          git clone --depth=3 https://gitee.com/sumumm/u-boot.git
           echo "✅ 下载完成,当前目录文件为:"
           ls -alh
+          chmod 777 version.sh
+          ./version.sh
 
       - name: 安装交叉编译工具链
         env:
@@ -101,13 +103,14 @@ jobs:
           body: |
             **版本说明**  
             基于标签 ${{ github.ref }} 构建的稳定版本。
-            更新内容详见 README.md。
-          body_path: README.md  # 可选
+            更新内容详见 version.md。
+          body_path: version.md  # 可选
           draft: false
           prerelease: false
           make_latest: true
           files: |
             README.md
+            version.md
             ${{ github.workspace }}/u-boot/image_output/u-boot-*.tar.bz2
             ${{ github.workspace }}/kernel_nxp_4.19.71/image_output/kernel-*.tar.bz2
             ${{ github.workspace }}/linux-rootfs/buildroot-2023.05.1/output/images/rootfs-*.tar.bz2
