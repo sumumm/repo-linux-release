@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04 # ubuntu-latest ubuntu的最新版本
+    runs-on: ubuntu-22.04 # ubuntu-latest ubuntu的最新版本
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
     #if: github.event_name == 'push' || startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
     steps:
@@ -20,13 +20,15 @@ jobs:
           ls ${{ github.workspace }} -alh
           echo "HOME路径为 $HOME"
           ls $HOME -alh
-
+      # 对于ubuntu22.04,编译4.19.71版本内核会有一些bug，需要对gcc进行降级
       - name: 运行 setup_env.sh 脚本设置环境
         run: |
           cd ${{ github.workspace }}
           ls -alh
           chmod 777 setup_env.sh
           ./setup_env.sh
+          sudo apt install gcc-9
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
 
       - name: 配置Git参数
         env:
@@ -71,6 +73,9 @@ jobs:
           source ~/.bash_profile
           arm-linux-gnueabihf-gcc --version
 
+      # - name: Setup tmate 
+      #   uses: mxschmitt/action-tmate@v3
+
       - name: 编译uboot
         run: |
           cd ${{ github.workspace }}
@@ -84,7 +89,7 @@ jobs:
           cd linux-kernel
           chmod 777 build.sh
           ./build.sh -p 1
-
+      
       - name: 制作打包根文件系统
         run: |
           cd ${{ github.workspace }}
