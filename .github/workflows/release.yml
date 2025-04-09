@@ -106,6 +106,17 @@ jobs:
       # - name: Setup tmate 
       #   uses: mxschmitt/action-tmate@v3
 
+      - name: 打包所有成果物
+        run: |
+          cd ${{ github.workspace }}
+          mkdir -p release
+          cp -pvf ${{ github.workspace }}/u-boot/image_output/u-boot-*.tar.bz2 release
+          cp -pvf ${{ github.workspace }}/kernel_nxp_4.19.71/image_output/kernel-*.tar.bz2 release
+          cp -pvf ${{ github.workspace }}/linux-rootfs/buildroot-2023.05.1/output/images/rootfs-*.tar.bz2 release
+          tar -jcf release.tar.bz2 release
+          echo "✅ 打包完成，压缩包内文件为:"
+          tar -tjf release.tar.bz2
+
       - name: 发布成果物
         id: new_release
         uses: softprops/action-gh-release@v2.0.8
@@ -124,8 +135,6 @@ jobs:
           files: |
             README.md
             version.md
-            ${{ github.workspace }}/u-boot/image_output/u-boot-*.tar.bz2
-            ${{ github.workspace }}/kernel_nxp_4.19.71/image_output/kernel-*.tar.bz2
-            ${{ github.workspace }}/linux-rootfs/buildroot-2023.05.1/output/images/rootfs-*.tar.bz2
+            ${{ github.workspace }}/release.tar.bz2
 
             
