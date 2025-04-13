@@ -135,6 +135,7 @@ jobs:
           files: |
             README.md
             version.md
+            release_uncompress.sh
             ${{ github.workspace }}/release.tar.bz2
 
             
