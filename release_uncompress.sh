@@ -28,6 +28,10 @@ function main()
     safe_mkdir "$TARGET_TFTP" "$TARGET_NFS"
 
     # 阶段2：解压主发布包
+    if [ -d "${RELEASE_DIR}" ]; then
+        rm -rvf ${RELEASE_DIR}
+    fi
+
     if [ ! -f "release.tar.bz2" ]; then
         echo "错误：未找到 release.tar.bz2"
         exit 2
