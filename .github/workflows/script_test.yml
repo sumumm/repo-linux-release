@@ -1,0 +1,48 @@
+name: script_test
+
+on:
+  push:
+    branches: master                    # 2020年10月后github新建仓库默认分支改为main，注意更改
+    tags: "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04 # ubuntu-latest ubuntu的最新版本
+    if: github.event_name == 'push' || startsWith(github.ref, 'refs/tags') # 只在创建tags的时候才发布版本
+    steps:
+      - uses: actions/checkout@v4
+      - name: 打印相关路径
+        run: | # | 为 yaml 的特定符号，其下可以使用多行文字。
+          cat /proc/version
+          echo "当前路径为 $(pwd)"
+          ls -alh
+          echo "github.workspace路径为 ${{ github.workspace }}"
+          ls ${{ github.workspace }} -alh
+          echo "HOME路径为 $HOME"
+          ls $HOME -a
+
+      - name: 运行 setup_env.sh 脚本设置环境
+        run: |
+          cd ${{ github.workspace }}
+          ls -alh
+          chmod 777 setup_env.sh install_arm_gcc.sh
+          ./setup_env.sh
+          ./install_arm_gcc.sh
+
+      - name: 配置Git参数
+        env:
+          GITHUB_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+          GITHUB_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+        run: |
+          git config user.name "$GITHUB_USER_NAME"
+          git config user.email "$GITHUB_USER_EMAIL"
+
+
+      # 会停在这里，我们用ssh调试,会有下面的打印
+      # SSH: ssh HLZdjxXTgmyb8uk5rSRKujRfA@nyc1.tmate.io
+      # or: ssh -i <path-to-private-SSH-key> HLZdjxXTgmyb8uk5rSRKujRfA@nyc1.tmate.io
+      # 上传 rsync -avz <session_id>@tmate.io:/path/to/remote/file /path/to/local/directory
+      # 同步 rsync -avz /path/to/local/file <session_id>@tmate.io:/path/to/remote/directory
+
+      # - name: Setup tmate 
+      #   uses: mxschmitt/action-tmate@v3
