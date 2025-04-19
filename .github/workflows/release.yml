@@ -42,10 +42,10 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           echo "⬇️ 下载所需要的仓库(只克隆最近一次提交记录)..."
-          git clone --depth=2 https://gitee.com/sumumm/linux-shell-script.git
-          git clone --depth=2 https://gitee.com/sumumm/linux-kernel.git
-          git clone --depth=2 https://gitee.com/sumumm/linux-rootfs.git
-          git clone --depth=2 https://gitee.com/sumumm/u-boot.git
+          git clone --depth=2 https://github.com/sumumm/linux-shell-script.git
+          git clone --depth=2 https://github.com/imx-embeddev/kernel.git linux-kernel
+          git clone --depth=2 https://github.com/imx-embeddev/rootfs.git linux-rootfs
+          git clone --depth=2 https://github.com/imx-embeddev/u-boot.git
           echo "✅ 下载完成,当前目录文件为:"
           ls -alh
           chmod 777 version.sh
